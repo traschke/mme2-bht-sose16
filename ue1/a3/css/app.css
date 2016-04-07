@@ -52,6 +52,15 @@ input:hover{
 	color: lightgrey;
 }
 
+input:disabled {
+	color: darkgray;
+}
+
+input:disabled:hover {
+	background-color: lightgray;
+	color: darkgray;
+}
+
 nav {
 	background-color: aquamarine;
 	padding: 20px 10px;
