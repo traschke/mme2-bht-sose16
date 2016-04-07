@@ -1,3 +1,9 @@
+/**
+ * Video initializer.
+ * @file Searches index.html for video-elements and initializes the control buttons.
+ * @author Raschke, Reguieg, Schmiechen
+ */
+
 window.addEventListener('load', function(){
    console.log('Loaded!');
 
