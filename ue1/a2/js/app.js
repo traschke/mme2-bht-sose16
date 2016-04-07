@@ -30,19 +30,29 @@ window.addEventListener('load', function(){
          */
         this.btnStop = this.videoElement.parentNode.getElementsByClassName('stop')[0];
 
-        // Add event listeners to the buttons
+        /**
+         * Play event handler.
+         */
         this.btnPlay.addEventListener('click', function(e) {
             self.videoElement.play();
             self.btnPlay.disabled = true;
             self.btnPause.disabled = false;
             self.btnStop.disabled = false;
         });
+
+        /**
+         * Pause event handler.
+         */
         this.btnPause.addEventListener('click', function(e) {
             self.videoElement.pause();
             self.btnPlay.disabled = false;
             self.btnPause.disabled = true;
             self.btnStop.disabled = false;
         });
+
+        /**
+         * Stop event handler.
+         */
         this.btnStop.addEventListener('click', function(e) {
             // Workaround, because there is no stop function
             self.videoElement.pause();
@@ -52,7 +62,9 @@ window.addEventListener('load', function(){
             self.btnStop.disabled = true;
         });
 
-        // Event-handler for video ended
+        /**
+         * Event-handler for video ended.
+         */
         this.videoElement.addEventListener('ended', function(e) {
             self.videoElement.currentTime = 0.0;
             self.btnPlay.disabled = false;
