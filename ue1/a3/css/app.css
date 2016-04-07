@@ -111,4 +111,7 @@ nav li a:hover {
 	 article{
 		 margin: 0;
 	 }
+	 input{
+		 margin: 5px;
+	 }
  }
