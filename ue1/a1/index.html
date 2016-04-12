@@ -2,45 +2,64 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MME2 Übung 1 | Gruppe Selfiestick</title>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,300' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
 <header>
     <h1>Übung 1</h1>
 </header>
-<article>
-    <h2>Aufgabe 1</h2>
-    <section id="video1">
-        <h3>Video 1 MP4</h3>
-        <video width="320" height="240" controls>
-            <source src="http://techslides.com/demos/sample-videos/small.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-    </section>
-    <section id="video2">
-        <h3>Video 2 WEBM</h3>
-        <video width="320" height="240" controls>
-            <source src="http://techslides.com/demos/sample-videos/small.webm" type="video/webm">
-            Your browser does not support the video tag.
-        </video>
-    </section>
-    <section id="video3">
-        <h3>Video 3 OGG</h3>
-        <video width="320" height="240" controls>
-            <source src="http://techslides.com/demos/sample-videos/small.ogv" type="video/ogg">
-            Your browser does not support the video tag.
-        </video>
-    </section>
-    <aside>
-        <ul>
+<aside>
+    <nav>
+        <ul class="menu">
             <li><a href="#video1">Video 1</a></li>
             <li><a href="#video2">Video 2</a></li>
             <li><a href="#video3">Video 3</a></li>
         </ul>
-    </aside>
-</article>
-<footer>
+    </nav>
+</aside>
+<main>
+    <h2>Aufgabe 1</h2>
+    <section id="video1">
+        <h3>Video 1 MP4</h3>
+        <video>
+            <source src="http://techslides.com/demos/sample-videos/small.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <p>
+            <input type="button" class="play" value="Play">
+            <input type="button" class="pause" value="Pause" disabled>
+            <input type="button" class="stop" value="Stop" disabled>
+        </p>
+    </section>
+    <section id="video2">
+        <h3>Video 2 WEBM</h3>
+        <video>
+            <source src="http://techslides.com/demos/sample-videos/small.webm" type="video/webm">
+            Your browser does not support the video tag.
+        </video>
+        <p>
+            <input type="button" class="play" value="Play">
+            <input type="button" class="pause" value="Pause" disabled>
+            <input type="button" class="stop" value="Stop" disabled>
+        </p>
+    </section>
+    <section id="video3">
+        <h3>Video 3 OGG</h3>
+        <video>
+            <source src="http://techslides.com/demos/sample-videos/small.ogv" type="video/ogg">
+            Your browser does not support the video tag.
+        </video>
+        <p>
+            <input type="button" class="play" value="Play">
+            <input type="button" class="pause" value="Pause" disabled>
+            <input type="button" class="stop" value="Stop" disabled>
+        </p>
+    </section>
+</main>
+<footer class="clearfix">
     <p>Raschke, Reguieg, Schmiechen</p>
 </footer>
 <script src="js/app.js"></script>

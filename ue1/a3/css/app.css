@@ -26,7 +26,7 @@ section{
 	padding: 10px;
 	margin: 15px;
 }
-article {
+main {
 	margin-left: 15%;
 }
 aside{
@@ -108,7 +108,7 @@ nav li a:hover {
 		 float: none;
 		 width: 100%;
 	 }
-	 article{
+	 main{
 		 margin: 0;
 	 }
 	 input{
