@@ -13,6 +13,15 @@ app.get('/', function (req, res) {
       '</html>'
   );
 });
+app.get('/time', function (req, res) {
+ res.writeHead(200, { "Content-Type": "text/plain" });
+ var date = new Date();
+ var hours = date.getHours();
+ var minutes = date.getMinutes();
+ res.end(hours + " h : " + minutes + " min");
+});
+
+app.use('/static', express.static('public'));
 
 var server = app.listen(3000, function () {
   console.log("helloworld app is ready and listening at http://localhost:3000");
