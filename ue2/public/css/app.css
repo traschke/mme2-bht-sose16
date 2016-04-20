@@ -1,0 +1,117 @@
+/**
+* Created by Raschke, Reguieg, Schmiechen.
+* This is the main style file for index.html
+*/
+
+*{
+	font-family: 'Roboto', Helvetica, Arial, sans-serif;
+	text-align: center;
+	color: grey;
+}
+
+header{
+	background-color: lightblue;
+	padding: 20px;
+}
+
+header h1{
+	font-size: 45px;
+	color: blue;
+}
+
+section{
+	border: 1px;
+	border-color: grey;
+	border-style: solid;
+	padding: 10px;
+	margin: 15px;
+}
+main {
+	margin-left: 15%;
+}
+aside{
+	float: left;
+	width: 15%;
+}
+video{
+	width: 50%;
+}
+
+video:hover {
+	-webkit-filter: blur(10px);
+}
+
+input{
+	background-color: lightgrey;
+    border: none;
+    color: grey;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+input:hover{
+	background-color: grey;
+	color: lightgrey;
+}
+
+input:disabled {
+	color: darkgray;
+}
+
+input:disabled:hover {
+	background-color: lightgray;
+	color: darkgray;
+}
+
+nav {
+	background-color: aquamarine;
+	padding: 20px 10px;
+}
+
+nav ul, nav li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: block;
+}
+
+nav li a {
+	display: inline-block;
+	width: 100%;
+	padding: 5px 10px;
+	text-decoration: none;
+	box-sizing: border-box;
+}
+
+nav li a:hover {
+	background-color: aqua;
+}
+
+.clearfix {
+	clear: both;
+}
+
+ @media (min-width: 100px) and (max-width: 600px) {
+ 	video:hover {
+        -webkit-filter: none;
+     }
+     section{
+     	margin: 35px;
+     }
+     video{
+     	width: 100%;
+     }
+	 aside{
+		 float: none;
+		 width: 100%;
+	 }
+	 main{
+		 margin: 0;
+	 }
+	 input{
+		 margin: 5px;
+	 }
+ }
