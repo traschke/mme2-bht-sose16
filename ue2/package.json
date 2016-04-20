@@ -1,0 +1,12 @@
+{ "name" : "ue2_helloworld",
+  "version": "1.1.1",
+  "description": "Übungsblatt 2 Aufgabe 2",
+  "author": "Timo Raschke, Khaled Reguieg, Pauline Schmiechen",
+  "scripts": {
+    "start": "node app.js",
+    "__comment" : "npm start: ruft direkt die app.js auf"
+  },
+  "bugs": {
+  	"email": "schmiechenpauline@gmail.com"
+  }
+}
