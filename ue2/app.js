@@ -5,6 +5,9 @@
 var express = require('express');
 var app = express();
 
+/**
+ * Create small HTML website which shows hello world, programmatically.
+ */
 app.get('/', function (req, res) {
   res.send('<!DOCTYPE html>' +
       '<html lane="en"' +
