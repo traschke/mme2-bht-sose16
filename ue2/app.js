@@ -25,23 +25,22 @@ app.get('/time', function (req, res) {
  res.end(hours + " h : " + minutes + " min");
 });
 
+/**
+ * Read contents of text.txt and append the needed time in nanoseconds to the response.
+ */
 app.get('/text.txt', function (req, res) {
-var date1 = new Date();
-var time1 = date1.getMilliseconds();
-var fs = require('fs');
- res.writeHead(200, { "Content-Type": "text/plain" });
- fs.readFile('text.txt', 'utf8', function(err, contents) {
-    res.end(contents);
- });
-
-var date2 = new Date();
-var time2 = date2.getMilliseconds();
-var time = time2 - time1;
-    console.log("Zeit : " + time);
+    var timeNew = process.hrtime();
+    var fs = require('fs');
+    res.writeHead(200, {"Content-Type": "text/plain"});
+    fs.readFile('text.txt', 'utf8', function (err, contents) {
+        res.write(contents);
+        var diff = process.hrtime(timeNew);
+        res.end("\nNeeded " + (diff[0] * 1e9 + diff[1]) + " nanoseconds");
+    });
 });
 
 app.use('/static', express.static('public'));
 
 var server = app.listen(3000, function () {
   console.log("helloworld app is ready and listening at http://localhost:3000");
-})
+});
