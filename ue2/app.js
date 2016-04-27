@@ -10,7 +10,7 @@ var app = express();
  */
 app.get('/', function (req, res) {
     res.send('<!DOCTYPE html>' +
-        '<html lane="en"' +
+        '<html lang="en"' +
         '<head><meta charset="utf-8"></head>' +
         '<body><h1>Hello World!</h1></body>' +
         '</html>'
