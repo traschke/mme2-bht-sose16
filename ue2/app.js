@@ -9,20 +9,20 @@ var app = express();
  * Create small HTML website which shows hello world, programmatically.
  */
 app.get('/', function (req, res) {
-  res.send('<!DOCTYPE html>' +
-      '<html lane="en"' +
-      '<head><meta charset="utf-8"></head>' +
-      '<body><h1>Hello World!</h1></body>' +
-      '</html>'
-  );
+    res.send('<!DOCTYPE html>' +
+        '<html lane="en"' +
+        '<head><meta charset="utf-8"></head>' +
+        '<body><h1>Hello World!</h1></body>' +
+        '</html>'
+    );
 });
 
 app.get('/time', function (req, res) {
- res.writeHead(200, { "Content-Type": "text/plain" });
- var date = new Date();
- var hours = date.getHours();
- var minutes = date.getMinutes();
- res.end(hours + " h : " + minutes + " min");
+    res.writeHead(200, {"Content-Type": "text/plain"});
+    var date = new Date();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    res.end(hours + " h : " + minutes + " min");
 });
 
 /**
@@ -42,5 +42,5 @@ app.get('/text.txt', function (req, res) {
 app.use('/static', express.static('public'));
 
 var server = app.listen(3000, function () {
-  console.log("helloworld app is ready and listening at http://localhost:3000");
+    console.log("helloworld app is ready and listening at http://localhost:3000");
 });
