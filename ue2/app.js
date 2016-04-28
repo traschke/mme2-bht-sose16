@@ -17,6 +17,9 @@ app.get('/', function (req, res) {
     );
 });
 
+/**
+ * Displays current time in hours and minutes
+ */
 app.get('/time', function (req, res) {
     res.writeHead(200, {"Content-Type": "text/plain"});
     var date = new Date();
@@ -39,6 +42,9 @@ app.get('/text.txt', function (req, res) {
     });
 });
 
+/**
+ * Loads index.html from directory 'public'
+ */
 app.use('/static', express.static('public'));
 
 var server = app.listen(3000, function () {
