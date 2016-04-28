@@ -4,18 +4,7 @@
  */
 var express = require('express');
 var app = express();
-
-/**
- * Create small HTML website which shows hello world, programmatically.
- */
-app.get('/', function (req, res) {
-    res.send('<!DOCTYPE html>' +
-        '<html lang="en">' +
-        '<head><meta charset="utf-8"></head>' +
-        '<body><h1>Hello World!</h1></body>' +
-        '</html>'
-    );
-});
+var fs = require('fs');         
 
 /**
  * Displays current time in hours and minutes
@@ -33,9 +22,8 @@ app.get('/time', function (req, res) {
  */
 app.get('/text.txt', function (req, res) {
     var timeNew = process.hrtime();
-    var fs = require('fs');
-    res.writeHead(200, {"Content-Type": "text/plain"});
     fs.readFile('text.txt', 'utf8', function (err, contents) {
+        res.writeHead(200, {"Content-Type": "text/plain"});
         res.write(contents);
         var diff = process.hrtime(timeNew);
         res.end("\nNeeded " + (diff[0] * 1e9 + diff[1]) + " nanoseconds");
@@ -46,6 +34,18 @@ app.get('/text.txt', function (req, res) {
  * Loads index.html from directory 'public'
  */
 app.use('/static', express.static('public'));
+
+/**
+ * Create small HTML website which shows hello world, programmatically.
+ */
+app.get('/*', function (req, res) {
+    res.send('<!DOCTYPE html>' +
+        '<html lang="en">' +
+        '<head><meta charset="utf-8"></head>' +
+        '<body><h1>Hello World!</h1></body>' +
+        '</html>'
+    );
+});
 
 var server = app.listen(3000, function () {
     console.log("helloworld app is ready and listening at http://localhost:3000");
