@@ -93,7 +93,17 @@ app.put('/tweets/:id', function(req,res,next) {
 
 
 // TODO: add your routes etc.
-
+app.get('/user/:id/tweets', function(req, res, next) {
+    var id = req.params.id;
+    var tweets = store.select('tweets');
+    var userTweets = [];
+    for (var i = 0; i < tweets.length; i++) {
+        if (tweets[i].creator.href.indexOf(id) > -1) {
+            userTweets.push(tweets[i]);
+        }
+    }
+    res.json(userTweets);
+});
 
 // CatchAll for the rest (unfound routes/resources ********
 
