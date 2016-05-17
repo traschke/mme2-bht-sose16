@@ -66,14 +66,14 @@ app.use(function(req, res, next) {
 
 // Routes ***************************************
 
-app.get('/tweets', function(req, res, next) {
+app.get('/tweets', function (req, res, next) {
     var tweets = store.select('tweets');
     addHrefToTweets(tweets);
     res.json(tweets);
 });
 
-app.post('/tweets', function(req, res, next) {
-    var id = store.insert('tweets', req.body); 
+app.post('/tweets', function (req, res, next) {
+    var id = store.insert('tweets', req.body);
     // set code 201 "created" and send the item back
     var tweets = store.select('tweets', id);
     addHrefToTweets([tweets]);
@@ -81,18 +81,18 @@ app.post('/tweets', function(req, res, next) {
 });
 
 
-app.get('/tweets/:id', function(req, res, next) {
+app.get('/tweets/:id', function (req, res, next) {
     var tweets = store.select('tweets', req.params.id);
     addHrefToTweets([tweets]);
     res.json(tweets);
 });
 
-app.delete('/tweets/:id', function(req, res, next) {
+app.delete('/tweets/:id', function (req, res, next) {
     store.remove('tweets', req.params.id);
     res.status(200).end();
 });
 
-app.put('/tweets/:id', function(req, res, next) {
+app.put('/tweets/:id', function (req, res, next) {
     store.replace('tweets', req.params.id, req.body);
     addHrefToTweets([store.select('tweets', req.params.id)]);
     res.status(200).end();
@@ -100,13 +100,13 @@ app.put('/tweets/:id', function(req, res, next) {
 
 
 // TODO: add your routes etc.
-app.get('/users', function(req, res, next) {
+app.get('/users', function (req, res, next) {
     var users = store.select('users');
     addHrefToUsers(users);
     res.json(users);
 });
 
-app.post('/users', function(req, res, next) {
+app.post('/users', function (req, res, next) {
     var id = store.insert('users', req.body);
     // set code 201 "created" and send the item back
     var user = store.select('users', id);
@@ -114,24 +114,24 @@ app.post('/users', function(req, res, next) {
     res.status(201).json(user);
 });
 
-app.get('/users/:id', function(req, res, next) {
+app.get('/users/:id', function (req, res, next) {
     var user = store.select('users', req.params.id);
     addHrefToUsers([user]);
     res.json(user);
 });
 
-app.delete('/users/:id', function(req, res, next) {
+app.delete('/users/:id', function (req, res, next) {
     store.remove('users', req.params.id);
     res.status(200).end();
 });
 
-app.put('/users/:id', function(req, res, next) {
+app.put('/users/:id', function (req, res, next) {
     store.replace('users', req.params.id, req.body);
     addHrefToUsers([store.select('users', req.params.id)]);
     res.status(200).end();
 });
 
-app.get('/users/:id/tweets', function(req, res, next) {
+app.get('/users/:id/tweets', function (req, res, next) {
     var id = req.params.id;
     var tweets = store.select('tweets');
     var userTweets = [];
