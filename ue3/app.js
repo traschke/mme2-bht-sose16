@@ -93,7 +93,31 @@ app.put('/tweets/:id', function(req,res,next) {
 
 
 // TODO: add your routes etc.
-app.get('/user/:id/tweets', function(req, res, next) {
+app.get('/users', function(req, res, next) {
+    res.json(store.select('users'));
+});
+
+app.post('/users', function(req, res, next) {
+    var id = store.insert('users', req.body);
+    // set code 201 "created" and send the item back
+    res.status(201).json(store.select('users', id));
+});
+
+app.get('/users/:id', function(req, res, next) {
+    res.json(store.select('users', req.params.id));
+});
+
+app.delete('/users/:id', function(req, res, next) {
+    store.remove('users', req.params.id);
+    res.status(200).end();
+});
+
+app.put('/users/:id', function(req, res, next) {
+    store.replace('users', req.params.id, req.body);
+    res.status(200).end();
+});
+
+app.get('/users/:id/tweets', function(req, res, next) {
     var id = req.params.id;
     var tweets = store.select('tweets');
     var userTweets = [];
