@@ -94,23 +94,30 @@ app.delete('/tweets/:id', function(req, res, next) {
 
 app.put('/tweets/:id', function(req, res, next) {
     store.replace('tweets', req.params.id, req.body);
+    addHrefToTweets([store.select('tweets', req.params.id)]);
     res.status(200).end();
 });
 
 
 // TODO: add your routes etc.
 app.get('/users', function(req, res, next) {
-    res.json(store.select('users'));
+    var users = store.select('users');
+    addHrefToUsers(users);
+    res.json(users);
 });
 
 app.post('/users', function(req, res, next) {
     var id = store.insert('users', req.body);
     // set code 201 "created" and send the item back
-    res.status(201).json(store.select('users', id));
+    var user = store.select('users', id);
+    addHrefToUsers([user]);
+    res.status(201).json(user);
 });
 
 app.get('/users/:id', function(req, res, next) {
-    res.json(store.select('users', req.params.id));
+    var user = store.select('users', req.params.id);
+    addHrefToUsers([user]);
+    res.json(user);
 });
 
 app.delete('/users/:id', function(req, res, next) {
@@ -120,6 +127,7 @@ app.delete('/users/:id', function(req, res, next) {
 
 app.put('/users/:id', function(req, res, next) {
     store.replace('users', req.params.id, req.body);
+    addHrefToUsers([store.select('users', req.params.id)]);
     res.status(200).end();
 });
 
@@ -188,9 +196,16 @@ app.listen(3000, function(err) {
 function addHrefToTweets(tweets) {
     for (var i = 0; i < tweets.length; i++) {
         console.log('href?', tweets[i].creator.href);
-        if (tweets[i].creator.href === undefined) {
-            console.log('Generating HATEOS href...');
-            tweets[i].creator.href = 'http://localhost:3000/users/' + tweets[i].creator.id;
+        tweets[i].creator.href = 'http://localhost:3000/users/' + tweets[i].creator.id;
+    }
+}
+
+function addHrefToUsers(users) {
+    for (var i = 0; i < users.length; i++) {
+        if (users[i].href === undefined) {
+            users[i].href = new Object();
         }
+        console.log('Generating HATEOS href...');
+        users[i].href.tweets = 'http://localhost:3000/users/' + users[i].id + '/tweets';
     }
 }
