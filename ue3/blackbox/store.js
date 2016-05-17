@@ -36,13 +36,15 @@ var tweets = [
     {   id: globalCounter(),
         message: "Hello world tweet",
         creator: {
-            href: "http://localhost:3000/users/103"
+            id: 103,
+            //href: "http://localhost:3000/users/103"
         }
     },
     {   id: globalCounter(),
         message: "Another nice tweet",
         creator: {
-            href: "http://localhost:3000/users/104"
+            id: 104,
+            //href: "http://localhost:3000/users/104"
         }
     }
 ];

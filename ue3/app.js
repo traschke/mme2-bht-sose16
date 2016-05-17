@@ -66,27 +66,33 @@ app.use(function(req, res, next) {
 
 // Routes ***************************************
 
-app.get('/tweets', function(req,res,next) {
-    res.json(store.select('tweets'));
+app.get('/tweets', function(req, res, next) {
+    var tweets = store.select('tweets');
+    addHrefToTweets(tweets);
+    res.json(tweets);
 });
 
-app.post('/tweets', function(req,res,next) {
+app.post('/tweets', function(req, res, next) {
     var id = store.insert('tweets', req.body); 
     // set code 201 "created" and send the item back
-    res.status(201).json(store.select('tweets', id));
+    var tweets = store.select('tweets', id);
+    addHrefToTweets([tweets]);
+    res.status(201).json(tweets);
 });
 
 
-app.get('/tweets/:id', function(req,res,next) {
-    res.json(store.select('tweets', req.params.id));
+app.get('/tweets/:id', function(req, res, next) {
+    var tweets = store.select('tweets', req.params.id);
+    addHrefToTweets([tweets]);
+    res.json(tweets);
 });
 
-app.delete('/tweets/:id', function(req,res,next) {
+app.delete('/tweets/:id', function(req, res, next) {
     store.remove('tweets', req.params.id);
     res.status(200).end();
 });
 
-app.put('/tweets/:id', function(req,res,next) {
+app.put('/tweets/:id', function(req, res, next) {
     store.replace('tweets', req.params.id, req.body);
     res.status(200).end();
 });
@@ -122,10 +128,11 @@ app.get('/users/:id/tweets', function(req, res, next) {
     var tweets = store.select('tweets');
     var userTweets = [];
     for (var i = 0; i < tweets.length; i++) {
-        if (tweets[i].creator.href.indexOf(id) > -1) {
+        if (tweets[i].creator.id == id) {
             userTweets.push(tweets[i]);
         }
     }
+    addHrefToTweets(userTweets);
     res.json(userTweets);
 });
 
@@ -177,3 +184,13 @@ app.listen(3000, function(err) {
         console.log('Listening on port 3000');
     }
 });
+
+function addHrefToTweets(tweets) {
+    for (var i = 0; i < tweets.length; i++) {
+        console.log('href?', tweets[i].creator.href);
+        if (tweets[i].creator.href === undefined) {
+            console.log('Generating HATEOS href...');
+            tweets[i].creator.href = 'http://localhost:3000/users/' + tweets[i].creator.id;
+        }
+    }
+}
