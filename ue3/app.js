@@ -98,6 +98,19 @@ app.put('/tweets/:id', function (req, res, next) {
     res.status(200).end();
 });
 
+/**
+ * The patch route for tweets.
+ */
+app.patch('/tweets/:id', function (req, res, next) {
+    var sourceTweet = store.select('tweets', req.params.id);
+    if (sourceTweet !== undefined) {
+        var newData = req.body;
+        Object.assign( sourceTweet, newData);
+        res.status(200).end();
+    } else
+        res.status(404, "Invalid id.");
+});
+
 
 // TODO: add your routes etc.
 app.get('/users', function (req, res, next) {
@@ -116,7 +129,18 @@ app.post('/users', function (req, res, next) {
 
 app.get('/users/:id', function (req, res, next) {
     var user = store.select('users', req.params.id);
-    addHrefToUsers([user]);
+    if(req.query.expand === 'tweets') {
+        var tweets = store.select('tweets');
+        var userTweets = [];
+        for (var i = 0; i < tweets.length; i++) {
+            if (tweets[i].creator.id == req.params.id) {
+                userTweets.push(tweets[i]);
+            }
+        }
+        user.tweets = userTweets;
+    } else {
+        addHrefToUsers([user]);
+    }
     res.json(user);
 });
 
@@ -193,6 +217,11 @@ app.listen(3000, function(err) {
     }
 });
 
+/**
+ * Adds a href to every tweet, which contains the address of the user who wrote the tweet.
+ *
+ * @param tweets must be an array containing all the tweets who should get and href added.
+ */
 function addHrefToTweets(tweets) {
     for (var i = 0; i < tweets.length; i++) {
         console.log('href?', tweets[i].creator.href);
@@ -200,6 +229,11 @@ function addHrefToTweets(tweets) {
     }
 }
 
+/**
+ * Adds a href to every user, which contains the address of the tweet the user wrote.
+ *
+ * @param users must be an array containing all the users who should get and href added.
+ */
 function addHrefToUsers(users) {
     for (var i = 0; i < users.length; i++) {
         if (users[i].href === undefined) {
