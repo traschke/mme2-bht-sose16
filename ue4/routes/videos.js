@@ -37,13 +37,23 @@ videos.route('/')
         // set code 201 "created" and send the item back
         var video = store.select('videos', id);
         res.status(201).json(video);
+    })
+    .delete(function (req, res, next) {
+        res.status(404).end();
+    })
+    .put(function (req, res, next) {
+        res.status(405).end();
     });
+
 
 videos.route('/:id')
     .get(function(req, res, next) {
         var video = store.select('videos', req.params.id);
         res.send(video);
         res.status(200).end()
+    })
+    .post(function(req, res, next) {
+        res.status(405).end()
     })
     .delete(function (req, res, next) {
         store.remove('videos', req.params.id);
@@ -56,20 +66,5 @@ videos.route('/:id')
         res.status(200).end();
     });
 
-
-
-// this middleware function can be used, if you like (or remove it)
-videos.use(function(req, res, next){
-    // if anything to send has been added to res.locals.items
-    if (res.locals.items) {
-        // then we send it as json and remove it
-        res.json(res.locals.items);
-        delete res.locals.items;
-    } else {
-        // otherwise we set status to no-content
-        res.set('Content-Type', 'application/json');
-        res.status(204).end(); // no content;
-    }
-});
 
 module.exports = videos;
