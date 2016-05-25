@@ -28,14 +28,29 @@ var internalKeys = {id: 'number', timestamp: 'number'};
 // routes **********************
 videos.route('/')
     .get(function(req, res, next) {
-        // TODO
-        next();
+        var video = store.select('videos');
+        res.send(video);
     })
     .post(function(req,res,next) {
-        // TODO
-        next();
+        var id = store.insert('videos', req.body);
+        // set code 201 "created" and send the item back
+        var video = store.select('videos', id);
+        res.status(201).json(video);
     });
-// TODO
+
+videos.route('/:id')
+    .get(function(req, res, next) {
+        var video = store.select('videos', req.params.id);
+        res.send(video);
+    })
+    .delete(function (req, res, next) {
+        store.remove('videos', req.params.id);
+        res.status(200).end();
+    })
+    .put(function (req, res, next) {
+        store.replace('videos', req.params.id, req.body);
+        res.status(200).end();
+    });
 
 
 
