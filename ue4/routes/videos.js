@@ -50,7 +50,9 @@ videos.route('/:id')
         res.status(204).end();
     })
     .put(function (req, res, next) {
-        store.replace('videos', req.params.id, req.body);
+        var id = store.replace('videos', req.params.id, req.body);
+        var video = store.select("videos", id);
+        res.send(video);
         res.status(200).end();
     });
 
