@@ -30,6 +30,7 @@ videos.route('/')
     .get(function(req, res, next) {
         var video = store.select('videos');
         res.send(video);
+        res.status(200).end()
     })
     .post(function(req,res,next) {
         var id = store.insert('videos', req.body);
@@ -42,10 +43,11 @@ videos.route('/:id')
     .get(function(req, res, next) {
         var video = store.select('videos', req.params.id);
         res.send(video);
+        res.status(200).end()
     })
     .delete(function (req, res, next) {
         store.remove('videos', req.params.id);
-        res.status(200).end();
+        res.status(204).end();
     })
     .put(function (req, res, next) {
         store.replace('videos', req.params.id, req.body);
