@@ -48,10 +48,6 @@ videos.route('/')
 
 videos.route('/:id')
     .get(function(req, res, next) {
-        var video = store.select('videos', req.params.id);
-        if (video !== undefined) {
-            res.status(404).end();
-        }
         res.send(video);
         res.status(200).end()
     })
