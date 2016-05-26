@@ -55,8 +55,15 @@ videos.route('/:id')
         res.status(405).end()
     })
     .delete(function (req, res, next) {
+        var video = store.select('videos', req.params.id);
+
+        if (video !== undefined) {
             store.remove('videos', req.params.id);
             res.set('Content-Type', 'application/json').status(204).end();
+        } else {
+            res.set('Content-Type', 'application/json').status(404).end();
+        }
+
     })
     .put(function (req, res, next) {
         var id = store.replace('videos', req.params.id, req.body);
