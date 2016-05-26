@@ -56,7 +56,7 @@ videos.route('/:id')
     })
     .delete(function (req, res, next) {
             store.remove('videos', req.params.id);
-            res.status(204).end();
+            res.set('Content-Type', 'application/json').status(204).end();
     })
     .put(function (req, res, next) {
         var id = store.replace('videos', req.params.id, req.body);
