@@ -33,26 +33,56 @@ videos.route('/')
         res.status(200).end()
     })
     .post(function(req,res,next) {
-        var id = store.insert('videos', req.body);
-        // set code 201 "created" and send the item back
-        var video = store.select('videos', id);
-        res.status(201).json(video);
+        var err = undefined;
+        Object.keys(optionalKeys).forEach( function (key) {
+            if ( !req.body.hasOwnProperty(key) ) {
+                if(optionalKeys[key] === 'string') {
+                    req.body[key] = '';
+                } else {
+                    req.body[key] = 0;
+                }
+            }
+        } );
+        var numerics = {};
+        numerics.length = requiredKeys.length;
+        numerics.playcount = optionalKeys.playcount;
+        numerics.ranking = optionalKeys.ranking;
+        Object.keys(numerics).forEach( function (key) {
+            if ( req.body[key] < 0 ) {
+                err = new Error('{"error": { "message": "Numeric should not be negative.", "code": 400 } }');
+                err.status = 400;
+                next(err);
+                return;
+            }
+        });
+        if(!err) {
+            req.body.timestamp = Date.now();
+            var id = store.insert('videos', req.body);
+            // set code 201 "created" and send the item back
+            var video = store.select('videos', id);
+            res.status(201).json(video);
+            res.end();
+        }
     })
     .delete(function (req, res, next) {
         res.status(404).end();
     })
     .put(function (req, res, next) {
-        res.status(405).end();
+        var err = new Error('{"error": { "message": "Wrong Content-Type.", "code": 405 } }');
+        err.status = 405;
+        next(err);
     });
 
 
 videos.route('/:id')
     .get(function(req, res, next) {
         res.send(video);
-        res.status(200).end()
+        res.status(200).end();
     })
     .post(function(req, res, next) {
-        res.status(405).end()
+        var err = new Error('{"error": { "message": "This is the wrong URL you are sending your POST to.", "code": 400 } }');
+        err.status = 405;
+        next(err);
     })
     .delete(function (req, res, next) {
         var video = store.select('videos', req.params.id);
@@ -61,15 +91,16 @@ videos.route('/:id')
             store.remove('videos', req.params.id);
             res.set('Content-Type', 'application/json').status(204).end();
         } else {
-            res.set('Content-Type', 'application/json').status(404).end();
+            var err = new Error('{"error": { "message": "Resource does not exist.", "code": 400 } }');
+            err.status = 404;
+            next(err);
         }
 
     })
     .put(function (req, res, next) {
-        var id = store.replace('videos', req.params.id, req.body);
-        var video = store.select("videos", id);
-        res.send(video);
-        res.status(200).end();
+        store.replace('videos', req.params.id, req.body);
+        res.locals.items = store.select("videos", req.params.id);
+        next();
     });
 
 // this middleware function can be used, if you like (or remove it)
