@@ -26,18 +26,21 @@ var requiredKeys = {title: 'string', src: 'string', length: 'number'};
 var optionalKeys = {description: 'string', playcount: 'number', ranking: 'number'};
 var internalKeys = {id: 'number', timestamp: 'number'};
 
+var offset = require('../modules/offset');
+var limit = require('../modules/limit');
+
 
 // routes **********************
 videos.route('/')
     .get(function (req, res, next) {
+        var newVideos;
         var videos = store.select('videos');
-        var video = store.select('videos', req.params.id);
-        if (typeof video !== 'undefined') {
-            var filterOptions = req.query.filter.split(",");
-            if (typeof filterOptions === 'undefined') {
-                res.locals.items = video;
+        if (typeof videos !== 'undefined') {
+            if (typeof req.query.filter === 'undefined') {
+                res.locals.items = videos;
             } else {
-                var newVideos = video.map(function (video) {
+                var filterOptions = req.query.filter.split(",");
+                newVideos = videos.map(function (video) {
                     try {
                         var newVideo = filter(filterOptions, video);
                         return newVideo;
@@ -48,6 +51,13 @@ videos.route('/')
                 res.locals.items = newVideos;
             }
         }
+        try {
+            res.locals.items = offset(req.query.offset, res.locals.items);
+            res.locals.items = limit(req.query.limit, res.locals.items);
+        } catch(e) {
+            return next(e);
+        }
+
         next();
     })
     .post(function (req, res, next) {

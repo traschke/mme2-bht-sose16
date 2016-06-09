@@ -10,7 +10,7 @@
 var should = require('should');
 require('should-http');
 var request = require('supertest');
-var cfg = require('./../test/config_for_tests');
+var cfg = require('./config_for_tests');
 
 var baseURL = cfg.baseURL; // please change it in file config_for_tests.js
 var videoURL = cfg.videoURL;
@@ -21,15 +21,17 @@ var videoURL = baseURL + 'videos';
 var codes = cfg.codes;
 var videoCorrectMin = cfg.videoCorrectMin;
 var videoCorrectMax = cfg.videoCorrectMax;
+var videoIncorrectNumber = cfg.videoIncorrectNumber;
 
 // start of tests ********************************************************************************
-describe('Task 1.a CRUD', function() {
+describe('Task 1.b JSON Error data', function() {
     var videoCorrect1Result = null;
     var videoCorrect2Result = null;
     var videoIDsCleanup = [];
     describe('/videos REST API POST', function() {
         // good POSTs
-        it('should save a proper POST and add all missing fields and sends back the complete object with id, timestamp etc.', function(done) {
+        it('should save a proper POST with required fields and add all missing ones with default-values', function(done) {
+            var startDate = new Date();
             request(videoURL)
                 .post('/')
                 .set('Accept-Version', '1.0')
@@ -39,16 +41,20 @@ describe('Task 1.a CRUD', function() {
                 .expect('Content-Type', /json/)
                 .expect(codes.created)
                 .end(function(err, res) {
+                    var stopDate = new Date();
                     should.not.exist(err);
                     res.should.be.json();
                     res.body.should.have.properties(Object.getOwnPropertyNames(videoCorrectMin));
                     res.body.should.have.ownProperty('id').above(0);
+                    res.body.should.have.ownProperty('timestamp').within(startDate.getTime(), stopDate.getTime());
+                    res.body.should.have.property('playcount', 0);
+                    res.body.should.have.property('ranking', 0);
                     videoCorrect1Result = res.body;
                     videoIDsCleanup.push(res.body.id);
                     done();
                 })
         });
-        it('should save a proper POST with all fields and send back the object with id and timestamp', function(done) {
+        it('should save a proper POST with all fields', function(done) {
             request(videoURL)
                 .post('/')
                 .set('Accept-Version', '1.0')
@@ -72,34 +78,62 @@ describe('Task 1.a CRUD', function() {
         });
 
         // bad POSTs
-        it('should detect a post to wrong URL with id and answer with code 405', function(done) {
+        it('should detect a post to wrong URL with id and answer with code 405 and with a JSON error object', function(done) {
             request(videoURL)
                 .post('/123')
                 .set('Accept-Version', '1.0')
                 .set('Accept', 'application/json')
                 .set('Content-Type', 'application/json')
                 .send(videoCorrectMax)
+                .expect('Content-Type', /json/)
                 .expect(codes.wrongmethod)
                 .end(function(err, res) {
                     should.not.exist(err);
-                    if (res.body && res.body.id) {
+                    res.should.be.json();
+                    res.body.should.have.property('error');
+                    res.body.error.should.have.properties('message', 'code');
+                    if (res.body.id) { // in case the test failed and POST was saved
                         videoIDsCleanup.push(res.body.id);
                     }
                     done();
                 })
         });
         // bad POST, body contains nonsense (not JSON)
-        it('should detect a post with bad body and send status 400', function(done) {
+        it('should detect a post with bad body and send status 400 and a JSON error object', function(done) {
             request(videoURL)
                 .post('/')
                 .set('Accept-Version', '1.0')
                 .set('Accept', 'application/json')
                 .set('Content-Type', 'application/json')
                 .send('this is not proper JSON')
+                .expect('Content-Type', /json/)
                 .expect(codes.wrongrequest)
                 .end(function(err, res) {
                     should.not.exist(err);
-                    if (res.body && res.body.id) {
+                    res.should.be.json();
+                    res.body.should.have.property('error');
+                    res.body.error.should.have.properties('message', 'code');
+                    if (res.body.id) { // in case the test failed and POST was saved
+                        videoIDsCleanup.push(res.body.id);
+                    }
+                    done();
+                })
+        });
+        it('should detect a post with wrong numeric values and answer with code 400 and with a JSON error object', function(done) {
+            request(videoURL)
+                .post('/')
+                .set('Accept-Version', '1.0')
+                .set('Accept', 'application/json')
+                .set('Content-Type', 'application/json')
+                .send(videoIncorrectNumber)
+                .expect('Content-Type', /json/)
+                .expect(codes.wrongrequest)
+                .end(function(err, res) {
+                    should.not.exist(err);
+                    res.should.be.json();
+                    res.body.should.have.property('error');
+                    res.body.error.should.have.properties('message', 'code');
+                    if (res.body.id) { // in case the test failed and POST was saved
                         videoIDsCleanup.push(res.body.id);
                     }
                     done();
@@ -149,30 +183,58 @@ describe('Task 1.a CRUD', function() {
         });
 
         // bad PUTs
-        it('should detect a PUT to wrong URL without id and answer with code 405', function(done) {
+        it('should detect a PUT to wrong URL without id and answer with code 405 and with a JSON error object', function(done) {
             request(videoURL)
                 .put('/')
                 .set('Accept-Version', '1.0')
                 .set('Accept', 'application/json')
                 .set('Content-Type', 'application/json')
                 .send(videoCorrect1Result)
+                .expect('Content-Type', /json/)
                 .expect(codes.wrongmethod)
                 .end(function(err, res) {
                     should.not.exist(err);
+                    res.should.be.json();
+                    res.body.should.have.property('error');
+                    res.body.error.should.have.properties('message', 'code');
                     done();
                 })
         });
         // bad PUT, body contains nonsense (not JSON)
-        it('should detect a PUT with bad body and send status 400', function(done) {
+        it('should detect a PUT with bad body and send status 400 and with a JSON error object', function(done) {
             request(videoURL)
                 .put('/'+videoCorrect1Result.id)
                 .set('Accept-Version', '1.0')
                 .set('Accept', 'application/json')
                 .set('Content-Type', 'application/json')
                 .send('this is not proper JSON')
+                .expect('Content-Type', /json/)
                 .expect(codes.wrongrequest)
                 .end(function(err, res) {
                     should.not.exist(err);
+                    res.should.be.json();
+                    res.body.should.have.property('error');
+                    res.body.error.should.have.properties('message', 'code');
+                    done();
+                })
+        });
+        // bad PUT, body contains nonsense (not JSON)
+        it('should detect a PUT with missing id in body and send status 400 and with a JSON error object', function(done) {
+            var videoCorr1CopyNoId = JSON.parse(JSON.stringify(videoCorrect1Result));
+            delete videoCorr1CopyNoId.id;
+            request(videoURL)
+                .put('/'+videoCorrect1Result.id)
+                .set('Accept-Version', '1.0')
+                .set('Accept', 'application/json')
+                .set('Content-Type', 'application/json')
+                .send(videoCorr1CopyNoId)
+                .expect('Content-Type', /json/)
+                .expect(codes.wrongrequest)
+                .end(function(err, res) {
+                    should.not.exist(err);
+                    res.should.be.json();
+                    res.body.should.have.property('error');
+                    res.body.error.should.have.properties('message', 'code');
                     done();
                 })
         });
@@ -193,15 +255,19 @@ describe('Task 1.a CRUD', function() {
                 })
         });
         // bad DELETEs
-        it('should properly detect if a resource does not exist for delete and answer with code 404', function(done) {
+        it('should properly detect if a resource does not exist for delete and answer with code 404 and with a JSON error object', function(done) {
             request(videoURL)
                 .delete('/'+videoCorrect1Result.id)
                 .set('Accept-Version', '1.0')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(codes.notfound)
+                .expect('Content-Type', /json/)
                 .end(function(err, res) {
                     should.not.exist(err);
+                    res.should.be.json();
+                    res.body.should.have.property('error');
+                    res.body.error.should.have.properties('message', 'code');
                     done();
                 })
         });
@@ -210,16 +276,16 @@ describe('Task 1.a CRUD', function() {
     after(function(done) {
         var numDone = videoIDsCleanup.length;
         for (var i = 0; i < videoIDsCleanup.length; i++) {
-                request(videoURL)
-                    .delete('/' + videoIDsCleanup[i])
-                    .set('Accept-Version', '1.0')
-                    .set('Accept', 'application/json')
-                    .expect(true)
-                    .end(function() {
-                        if (--numDone === 0) {
-                            done();
-                        }
-                    });
+            request(videoURL)
+                .delete('/' + videoIDsCleanup[i])
+                .set('Accept-Version', '1.0')
+                .set('Accept', 'application/json')
+                .expect(true)
+                .end(function() {
+                    if (--numDone === 0) {
+                        done();
+                    }
+                });
         };
         if (numDone === 0) {
             done();
