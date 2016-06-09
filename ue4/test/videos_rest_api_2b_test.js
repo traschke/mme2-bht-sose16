@@ -269,7 +269,7 @@ describe('Task 2.b Limits and Offset', function() {
         });
     });
     // delete the  posted videos at end if not already deleted...
-    /*after(function(done) {
+    after(function(done) {
         var numDone = videoIDsCleanup.length;
         for (var i = 0; i < videoIDsCleanup.length; i++) {
             request(videoURL)
@@ -286,5 +286,5 @@ describe('Task 2.b Limits and Offset', function() {
         if (numDone === 0) {
             done();
         }
-    });*/
+    });
 });
