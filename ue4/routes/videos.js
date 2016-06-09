@@ -16,6 +16,8 @@
 var express = require('express');
 var logger = require('debug')('me2u4:videos');
 var store = require('../blackbox/store');
+// maybe middleware
+var filter = require('../filter/filter');
 
 var videos = express.Router();
 
@@ -27,35 +29,51 @@ var internalKeys = {id: 'number', timestamp: 'number'};
 
 // routes **********************
 videos.route('/')
-    .get(function(req, res, next) {
-        var video = store.select('videos');
-        res.send(video);
-        res.status(200).end()
+    .get(function (req, res, next) {
+        var videos = store.select('videos');
+        var video = store.select('videos', req.params.id);
+        if (typeof video !== 'undefined') {
+            var filterOptions = req.query.filter.split(",");
+            if (typeof filterOptions === 'undefined') {
+                res.locals.items = video;
+            } else {
+                var newVideos = video.map(function (video) {
+                    try {
+                        var newVideo = filter(filterOptions, video);
+                        return newVideo;
+                    } catch (e) {
+                        return next(e);
+                    }
+                });
+                res.locals.items = newVideos;
+            }
+        }
+        next();
     })
-    .post(function(req,res,next) {
+    .post(function (req, res, next) {
         var err = undefined;
-        Object.keys(optionalKeys).forEach( function (key) {
-            if ( !req.body.hasOwnProperty(key) ) {
-                if(optionalKeys[key] === 'string') {
+        Object.keys(optionalKeys).forEach(function (key) {
+            if (!req.body.hasOwnProperty(key)) {
+                if (optionalKeys[key] === 'string') {
                     req.body[key] = '';
                 } else {
                     req.body[key] = 0;
                 }
             }
-        } );
+        });
         var numerics = {};
         numerics.length = requiredKeys.length;
         numerics.playcount = optionalKeys.playcount;
         numerics.ranking = optionalKeys.ranking;
-        Object.keys(numerics).forEach( function (key) {
-            if ( req.body[key] < 0 ) {
+        Object.keys(numerics).forEach(function (key) {
+            if (req.body[key] < 0) {
                 err = new Error('{"error": { "message": "Numeric should not be negative.", "code": 400 } }');
                 err.status = 400;
                 next(err);
                 return;
             }
         });
-        if(!err) {
+        if (!err) {
             req.body.timestamp = Date.now();
             var id = store.insert('videos', req.body);
             // set code 201 "created" and send the item back
@@ -75,11 +93,26 @@ videos.route('/')
 
 
 videos.route('/:id')
-    .get(function(req, res, next) {
-        res.send(video);
-        res.status(200).end();
+    .get(function (req, res, next) {
+        var video = store.select('videos', req.params.id);
+        if (typeof video !== 'undefined') {
+            var filterOptions = req.query.filter.split(",");
+            if (typeof filterOptions === 'undefined') {
+                res.locals.items = video;
+            } else {
+                try {
+                    var newVideo = filter(filterOptions, video);
+                    res.locals.items = newVideo;
+                } catch (e) {
+                    return next(e);
+                }
+            }
+        }
+        next();
     })
-    .post(function(req, res, next) {
+
+
+    .post(function (req, res, next) {
         var err = new Error('{"error": { "message": "This is the wrong URL you are sending your POST to.", "code": 400 } }');
         err.status = 405;
         next(err);
@@ -104,7 +137,7 @@ videos.route('/:id')
     });
 
 // this middleware function can be used, if you like (or remove it)
-videos.use(function(req, res, next){
+videos.use(function (req, res, next) {
     // if anything to send has been added to res.locals.items
     if (res.locals.items) {
         // then we send it as json and remove it
@@ -113,7 +146,10 @@ videos.use(function(req, res, next){
     } else {
         // otherwise we set status to no-content
         res.set('Content-Type', 'application/json');
-        res.status(204).end(); // no content;
+        if (!res.status) {
+            res.status(204) // no content;
+        }
+        res.end();
     }
 });
 
