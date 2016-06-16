@@ -109,12 +109,14 @@ app.route('/videos/:id')
             else {
                 // do your updates here
                 video.title = req.body.title;
-
-                video.save(function(err) {
+                video.src = req.body.src;
+                video.description = req.body.description;
+                video.length = req.body.length;
+                video.save(function(err, item) {
                     if (err)
-                        console.log('error')
+                        next(err);
                     else
-                        console.log('success')
+                        res.json(item);
                 });
             }
         });
