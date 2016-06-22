@@ -27,7 +27,6 @@ var errorResponseWare = require('./restapi/error-response');
 var videos = require('./routes/videos');
 //mogo db anbindung
 var db = mongoose.connect('mongodb://localhost:27017/me2');
-var videoModel = require('./models/video');
 
 
 // app creation
@@ -47,93 +46,7 @@ app.use(restAPIchecks);
 
 
 // Routes ******************************************************
-//app.use('/videos', videos);
-
-app.route('/videos')
-    .get(function(req, res, next){
-        var filter =  {};
-        for ( var k in req.query ) {
-            filter[k] = req.query[k];   // probably want to check in the loop
-        }
-        var queryFilter = videoModel.find({ }).select(filter);
-        queryFilter.exec(function(err, items) {
-                res.json(items);
-            });
-    })
-    .post(function(req, res, next) {
-        var video = new videoModel(req.body);
-        video.save(function(err) {
-            if (!err) { res.status(201).json(video)
-            }else {
-                next(err);
-            }
-        });
-    })
-    .delete(function (req, res, next) {
-        res.status(404).end();
-    })
-    .put(function (req, res, next) {
-        var err = new Error('{"error": { "message": "Wrong Content-Type.", "code": 405 } }');
-        err.status = 405;
-        next(err);
-    });
-
-app.route('/videos/:id')
-    .get(function(req, res, next){
-        videoModel.findOne({
-        '_id' : req.params.id
-        }, function (err, items) {
-            res.json(items);
-        })
-    })
-    .post(function (req, res, next) {
-        var err = new Error('{"error": { "message": "This is the wrong URL you are sending your POST to.", "code": 400 } }');
-        err.status = 405;
-        next(err);
-    })
-    .delete(function(req, res, next){
-        videoModel.findOne({
-            '_id' : req.params.id
-        }, function (err, item) {
-           item.remove();
-            res.json(item);
-        })
-    })
-    .patch(function (req, res, next) {
-        videoModel.findByIdAndUpdate(req.params.id, req.body, function (err){
-            videoModel.findById(req.params.id, function(err, video) {
-                var now = new Date();
-                video.updatedAt = now;
-            });
-            if(err)
-                next(err);
-            res.json({ message: 'Video updated!' });
-        });
-    })
-    .put(function (req, res, next) {
-        videoModel.findById(req.params.id, function(err, video) {
-            if (!video)
-               next(err);
-            else {
-                // do your updates here
-                video.title = req.body.title;
-                video.src = req.body.src;
-                video.description = req.body.description;
-                video.length = req.body.length;
-                var now = new Date();
-                video.updatedAt = now;
-                video.save(function(err, item) {
-                    if (err)
-                        next(err);
-                    else
-                        res.json(item);
-                });
-            }
-        });
-    });
-
-
-
+app.use('/videos', videos);
 
 // (from express-generator boilerplate  standard code)
 // Errorhandling and requests without proper URLs ************************
