@@ -15,6 +15,7 @@
  */
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var timestamp = timestamps = require('mongoose-time');
 
 var VideoSchema     = new Schema({
     title:          { type: String, required: true },
