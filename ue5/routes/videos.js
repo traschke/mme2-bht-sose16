@@ -40,10 +40,9 @@ videos.route('/')
             if (!err) {
                 res.status(201).json(video);
             } else {
-                var error = new Error('{"error": {"message": "Malformed JSON input.", "code": 400}}')
-                error.status = 400;
-                next(error);
-                return;
+                err.status = 400;
+                err.message += '. Malformed JSON input.';
+                next(err);
             }
         });
     })
@@ -60,14 +59,19 @@ videos.route('/:id')
     .get(function (req, res, next) {
         videoModel.findOne({
             '_id': req.params.id
-        }, function (err, items) {
+        }, function (err, video) {
             if (!err) {
-                res.json(items);
+                if (video) {
+                    res.json(video);
+                } else {
+                    var error = new Error('{"error": { "message": "No video with id ' + req.params.id + ' found.", "code": 404 } }');
+                    error.status = 404;
+                    next(error);
+                }
             } else {
-                var error = new Error('{"error": { "message": "No video with id ' + req.params.id + ' found.", "code": 404 } }');
-                error.status = 404;
+                err.status = 400;
+                err.message += ' in fields: ' + Object.getOwnPropertyNames(err.errors);
                 next(error);
-                return;
             }
         })
     })
@@ -77,12 +81,27 @@ videos.route('/:id')
         next(err);
     })
     .delete(function (req, res, next) {
-        videoModel.findOne({
-            '_id': req.params.id
-        }, function (err, item) {
-            item.remove();
-            res.json(item);
-        })
+        videoModel.findOne(
+            {
+                '_id': req.params.id
+            },
+            function (err, video) {
+                if (!err) {
+                    if (video) {
+                        video.remove();
+                        res.json(video);
+                    } else {
+                        var error = new Error('{"error": { "message": "No video with id ' + req.params.id + ' found.", "code": 404 } }');
+                        error.status = 404;
+                        next(error);
+                    }
+                } else {
+                    err.status = 400;
+                    err.message += ' in fields: ' + Object.getOwnPropertyNames(err.errors);
+                    next(error);
+                }
+            }
+        )
     })
     .patch(function (req, res, next) {
         videoModel.findByIdAndUpdate(req.params.id, req.body, function (err) {
