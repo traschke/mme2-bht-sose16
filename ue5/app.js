@@ -117,6 +117,8 @@ app.route('/videos/:id')
                 video.src = req.body.src;
                 video.description = req.body.description;
                 video.length = req.body.length;
+                var now = new Date();
+                video.updatedAt = now;
                 video.save(function(err, item) {
                     if (err)
                         next(err);
