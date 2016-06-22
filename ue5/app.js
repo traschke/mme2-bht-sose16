@@ -51,9 +51,16 @@ app.use(restAPIchecks);
 
 app.route('/videos')
     .get(function(req, res, next){
-        videoModel.find(function(err, items) {
-            res.json(items);
-        });
+        var filter =  {};
+        for ( var k in req.query ) {
+            filter[k] = req.query[k];   // probably want to check in the loop
+        }
+        console.log(filter);
+        var queryFilter = videoModel.find({ }).select(filter);
+        queryFilter.exec(function(err, items) {
+                res.json(items);
+                return;
+            });
     })
     .post(function(req, res, next) {
         var video = new videoModel(req.body);
