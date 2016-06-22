@@ -24,7 +24,7 @@ var VideoSchema     = new Schema({
     playcount:      { type: Number, default: 0},
     ranking:        { type: Number, default: 0}
     }, {
-    timestamp:      { createdAt: 'timestamp' }
+    timestamps: {createdAt: 'timestamp'}
 });
 
 module.exports = mongoose.model('Video', VideoSchema);

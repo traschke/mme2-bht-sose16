@@ -55,11 +55,9 @@ app.route('/videos')
         for ( var k in req.query ) {
             filter[k] = req.query[k];   // probably want to check in the loop
         }
-        console.log(filter);
         var queryFilter = videoModel.find({ }).select(filter);
         queryFilter.exec(function(err, items) {
                 res.json(items);
-                return;
             });
     })
     .post(function(req, res, next) {
