@@ -101,10 +101,13 @@ app.route('/videos/:id')
     })
     .patch(function (req, res, next) {
         videoModel.findByIdAndUpdate(req.params.id, req.body, function (err){
+            videoModel.findById(req.params.id, function(err, video) {
+                var now = new Date();
+                video.updatedAt = now;
+            });
             if(err)
                 next(err);
             res.json({ message: 'Video updated!' });
-
         });
     })
     .put(function (req, res, next) {
