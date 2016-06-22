@@ -61,7 +61,14 @@ videos.route('/:id')
         videoModel.findOne({
             '_id': req.params.id
         }, function (err, items) {
-            res.json(items);
+            if (!err) {
+                res.json(items);
+            } else {
+                var error = new Error('{"error": { "message": "No video with id ' + req.params.id + ' found.", "code": 404 } }');
+                error.status = 404;
+                next(error);
+                return;
+            }
         })
     })
     .post(function (req, res, next) {
