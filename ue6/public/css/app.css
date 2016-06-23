@@ -38,7 +38,7 @@ video{
 }
 
 video:hover {
-	-webkit-filter: blur(10px);
+	/*-webkit-filter: blur(10px);*/
 }
 
 input{

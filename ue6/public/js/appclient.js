@@ -39,7 +39,7 @@ require(['jquery','backbone', 'models/video', 'views/video'],
                     console.log("Number of videos : " + response.length);
                     console.log(videos.at(0));
                     var videoView = new VideoView({model: videos.at(0)});
-                    $('body').append(videoView.render().el);
+                    $('main').append(videoView.render().el);
                 },
                 error: function(model, response) {
                     console.error("error ",model,response);

@@ -3,7 +3,7 @@
  */
 define(["backbone", "jquery", "underscore"], function(Backbone, $,  _){
     var VideoView = Backbone.View.extend({
-        tagName: "li",
+        tagName: "section",
         template : _.template($("#video-template").text()),
         render: function () {
             this.$el.html(this.template(this.model.attributes));
