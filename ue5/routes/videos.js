@@ -25,14 +25,23 @@ var videoModel = require('./../models/video');
 // routes **********************
 videos.route('/')
     .get(function (req, res, next) {
-        var filter = {};
-        for (var k in req.query) {
-            filter[k] = req.query[k];   // probably want to check in the loop
+        if(req.query.filter) {
+            var arrayFilter = req.query.filter.replace(",", " ");
+
+            var queryFilter = videoModel.find({}, arrayFilter);
+            queryFilter.exec(function (err, items) {
+                res.json(items);
+            });
         }
-        var queryFilter = videoModel.find({}).select(filter);
-        queryFilter.exec(function (err, items) {
-            res.json(items);
-        });
+        else{
+            videoModel.find({},function (err, videos) {
+                if(err)
+                    next(err);
+                else{
+                    res.json(videos);
+                }
+            });
+        }
     })
     .post(function (req, res, next) {
         var video = new videoModel(req.body);
@@ -125,6 +134,8 @@ videos.route('/:id')
                         video.src = req.body.src;
                         video.description = req.body.description;
                         video.length = req.body.length;
+                        var now = new Date();
+                        video.updatedAt = now;
                         video.save(function (err, item) {
                             if (err)
                                 next(err);
