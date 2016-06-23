@@ -115,25 +115,36 @@ videos.route('/:id')
         });
     })
     .put(function (req, res, next) {
-        videoModel.findById(req.params.id, function (err, video) {
-            if (!video) {
-                next(err);
-            }
-            else {
-                //var newvideo = new videoModel(req.body);
-                // do your updates here
-                video.title = req.body.title;
-                video.src = req.body.src;
-                video.description = req.body.description;
-                video.length = req.body.length;
-                video.save(function (err, item) {
-                    if (err)
-                        next(err);
-                    else
-                        res.json(item);
-                });
-            }
-        });
+        if (req.params.id == req.body._id) {
+            videoModel.findById(req.params.id, function (err, video) {
+                if (!err) {
+                    if (video) {
+                        //var newvideo = new videoModel(req.body);
+                        // do your updates here
+                        video.title = req.body.title;
+                        video.src = req.body.src;
+                        video.description = req.body.description;
+                        video.length = req.body.length;
+                        video.save(function (err, item) {
+                            if (err)
+                                next(err);
+                            else
+                                res.json(item);
+                        });
+                    } else {
+                        var error = new Error('{"error": { "message": "No video with id ' + req.params.id + ' found.", "code": 404 } }');
+                        error.status = 404;
+                        next(error);
+                    }
+                } else {
+                    next(err);
+                }
+            });
+        } else {
+            var error = new Error('{"error": { "message": "ID in body does not match id in query.", "code": 404 } }');
+            error.status = 404;
+            next(error);
+        }
     });
 
 // this middleware function can be used, if you like or remove it
