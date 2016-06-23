@@ -1,6 +1,6 @@
 /** This module defines the routes for videos using a mongoose model
  *
- * @author Johannes Konert
+ * @author Johannes Konert, Pauline Schmiechen, Timo Raschke
  * @licence CC BY-SA 4.0
  *
  * @module routes/videos
@@ -116,16 +116,16 @@ videos.route('/:id')
     })
     .put(function (req, res, next) {
         videoModel.findById(req.params.id, function (err, video) {
-            if (!video)
+            if (!video) {
                 next(err);
+            }
             else {
+                //var newvideo = new videoModel(req.body);
                 // do your updates here
                 video.title = req.body.title;
                 video.src = req.body.src;
                 video.description = req.body.description;
                 video.length = req.body.length;
-                var now = new Date();
-                video.updatedAt = now;
                 video.save(function (err, item) {
                     if (err)
                         next(err);

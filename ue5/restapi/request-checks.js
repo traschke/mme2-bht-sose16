@@ -54,7 +54,7 @@ router.use(function(req, res, next) {
         err = new Error("content in body is missing");
         err.status = 400;
         next(err);
-    } else if ('PUT' === req.method && !req.body.id) {
+    } else if ('PUT' === req.method && !req.body._id) {
         err = new Error("content in body is missing field id");
         err.status = 400;
         next(err);
