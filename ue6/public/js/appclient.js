@@ -22,8 +22,8 @@ requirejs.config({
 });
 
 // AMD conform require as provided by require.js
-require(['jquery','backbone', 'models/tweet', 'models/user', 'views/user', 'views/tweet-list', 'views/tweet-create'],
-        function($, Backbone, Tweet, User, UserView, TweetListView, TweetCreateView) {
+require(['jquery','backbone', 'models/video', 'views/video'],
+        function($, Backbone, Video, VideoView) {
 
     var AppRouter = Backbone.Router.extend({
         routes: {
@@ -31,31 +31,20 @@ require(['jquery','backbone', 'models/tweet', 'models/user', 'views/user', 'view
             '*whatever': 'main'
         },
         main: function(){
-            var user = new User.Model({_id : '57554efd6c5edc1f5c9a2778'}); // FIXME add correct user id here
-                                                                            // hard coded instead of login..
-            var userView = new UserView({model: user});
-            var that = this;
-            user.fetch( {
-               error: function(model, response) {
-                   console.error("no user fetched");
-                   userView.render();
-               },
-                success: function(model, response) {
-                   userView.render();
-                    that.user = user;
+            $('body').prepend('<h1>Video App</h1>');
+
+            var videos = new Video.Collection();
+            videos.fetch({
+                success: function(collection, response) {
+                    console.log("Number of videos : " + response.length);
+                    console.log(videos.at(0));
+                    var videoView = new VideoView({model: videos.at(0)});
+                    $('body').append(videoView.render().el);
+                },
+                error: function(model, response) {
+                    console.error("error ",model,response);
                 }
             });
-
-            var tweets = new Tweet.Collection();
-            var tweetListView = new TweetListView({collection: tweets});
-            tweets.fetch({
-                error: function (model, response) {
-                    console.error("no user fetched");
-                    userView.render();
-                },
-                success: tweetListView.render
-            });
-            var tweetCreateView = new TweetCreateView({collection:tweets, app: this});
         }
     });
 
