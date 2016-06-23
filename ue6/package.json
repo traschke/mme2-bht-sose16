@@ -1,0 +1,21 @@
+{
+  "name": "U5CodePack",
+  "author": "Johannes Konert, Timo Raschke, Khaled Reguieg, Pauline Schmiechen",
+  "licence": "CC BY-SA 4.0",
+  "version": "0.0.2",
+  "description": "Initial code set for exercise 5 (implementing an REST API for videos and connect them to mongoDB via mongoose) plus implementation of exercise 5.",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "body-parser": "~1.13.2",
+    "debug": "~2.2.0",
+    "express": "~4.13.1",
+    "mongoose": "^4.5.0",
+    "mongoose-time": "^0.1.0",
+    "morgan": "~1.6.1",
+    "serve-favicon": "~2.3.0"
+  },
+  "devDependencies": {}
+}
