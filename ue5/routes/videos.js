@@ -79,8 +79,7 @@ videos.route('/:id')
                 }
             } else {
                 err.status = 400;
-                err.message += ' in fields: ' + Object.getOwnPropertyNames(err.errors);
-                next(error);
+                next(err);
             }
         })
     })
@@ -106,22 +105,33 @@ videos.route('/:id')
                     }
                 } else {
                     err.status = 400;
-                    err.message += ' in fields: ' + Object.getOwnPropertyNames(err.errors);
-                    next(error);
+                    next(err);
                 }
             }
         )
     })
     .patch(function (req, res, next) {
-        videoModel.findByIdAndUpdate(req.params.id, req.body, function (err) {
-            videoModel.findById(req.params.id, function (err, video) {
-                var now = new Date();
-                video.updatedAt = now;
+        if (req.params.id == req.body._id) {
+            req.body.updatedAt = new Date();
+            videoModel.findByIdAndUpdate(req.params.id, req.body, {new: true}, function (err, video) {
+                if (!err) {
+                    if (video) {
+                        res.json(video);
+                    } else {
+                        var error = new Error('{"error": { "message": "No video with id ' + req.params.id + ' found.", "code": 404 } }');
+                        error.status = 404;
+                        next(error);
+                    }
+                } else {
+                    err.status = 400;
+                    next(err);
+                }
             });
-            if (err)
-                next(err);
-            res.json({message: 'Video updated!'});
-        });
+        } else {
+            var error = new Error('{"error": { "message": "ID in body does not match id in query.", "code": 404 } }');
+            error.status = 400;
+            next(error);
+        }
     })
     .put(function (req, res, next) {
         if (req.params.id == req.body._id) {
@@ -137,10 +147,12 @@ videos.route('/:id')
                         var now = new Date();
                         video.updatedAt = now;
                         video.save(function (err, item) {
-                            if (err)
+                            if (err) {
+                                err.status = 400;
                                 next(err);
-                            else
+                            } else {
                                 res.json(item);
+                            }
                         });
                     } else {
                         var error = new Error('{"error": { "message": "No video with id ' + req.params.id + ' found.", "code": 404 } }');
@@ -148,12 +160,13 @@ videos.route('/:id')
                         next(error);
                     }
                 } else {
+                    err.status = 400;
                     next(err);
                 }
             });
         } else {
             var error = new Error('{"error": { "message": "ID in body does not match id in query.", "code": 404 } }');
-            error.status = 404;
+            error.status = 400;
             next(error);
         }
     });
