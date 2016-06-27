@@ -31,14 +31,14 @@
 </footer>
 <script type="text/template" id="video-template">
             <h3><%= title %></h3>
-    <video>
+    <video class="video">
     <source src="<%= src %>" type="video/mp4">
             Your browser does not support the video tag.
     </video>
     <p>
-    <input type="button" class="play" value="Play">
-            <input type="button" class="pause" value="Pause" disabled>
-    <input type="button" class="stop" value="Stop" disabled>
+        <input type="button" class="play" value="Play">
+        <input type="button" class="pause" value="Pause" disabled>
+        <input type="button" class="stop" value="Stop" disabled>
     </p>
         <%= description %> <%= length %> <%= ranking %> <%= playcount %>
 </script>
