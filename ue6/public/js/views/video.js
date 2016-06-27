@@ -1,5 +1,10 @@
 /**
  * Created by paulineschmiechen + timo on 23.06.16.
+ *
+ * Backbone View creating new videos DOM representation.
+ * needs model to be set from outside
+ * template #video-template is used, but no element from DOM is used as direct anchor.
+ * Thus rendered result must be manually (outside) be attached to DOM
  */
 define(["backbone", "jquery", "underscore"], function(Backbone, $,  _){
     var VideoView = Backbone.View.extend({

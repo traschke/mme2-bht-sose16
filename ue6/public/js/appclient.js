@@ -1,4 +1,4 @@
-/** Main application file to start the client side single page app for tweets
+/** Main application file to start the client side single page app for videos
  *
  * @author Johannes Konert
  */
