@@ -30,7 +30,7 @@
     <p>Raschke, Reguieg, Schmiechen</p>
 </footer>
 <script type="text/template" id="video-template">
-            <h3><%= title %></h3>
+    <h3><%= title %></h3>
     <video class="video">
     <source src="<%= src %>" type="video/mp4">
             Your browser does not support the video tag.
@@ -40,7 +40,13 @@
         <input type="button" class="pause" value="Pause" disabled>
         <input type="button" class="stop" value="Stop" disabled>
     </p>
-        <%= description %> <%= length %> <%= ranking %> <%= playcount %>
+    <p>Views: <%= playcount %></p>
+    <p>
+        Beschreibung:<br>
+        <%= description %>
+    </p>
+    <p>Länge: <%= length %> Sekunden</p>
+    <p>Bewertung: <%= ranking %> von 5</p>
 </script>
 </body>
 </html>
