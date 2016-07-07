@@ -1,0 +1,26 @@
+[
+  {
+    "_id": "57711b5b0616a06430d675cb",
+    "updatedAt": "2016-06-27T12:26:03.641Z",
+    "timestamp": "2016-06-27T12:26:03.641Z",
+    "title": "Big Buck Bunny",
+    "src": "http://www.quirksmode.org/html5/videos/big_buck_bunny.mp4",
+    "length": 60,
+    "__v": 0,
+    "ranking": 0,
+    "playcount": 0,
+    "description": "Big Buck Bunny ist ein computer-generierter Kurzfilm, der hauptsächlich unter Verwendung von freier Software hergestellt wurde, insbesondere der 3D-Grafiksoftware Blender."
+  },
+  {
+    "_id": "57711f970616a06430d675cc",
+    "updatedAt": "2016-06-27T12:44:07.874Z",
+    "timestamp": "2016-06-27T12:44:07.874Z",
+    "title": "Lego Dinges",
+    "src": "http://techslides.com/demos/sample-videos/small.mp4",
+    "length": 60,
+    "__v": 0,
+    "ranking": 0,
+    "playcount": 0,
+    "description": "Komisches Lego Video was keiner versteht."
+  }
+]
